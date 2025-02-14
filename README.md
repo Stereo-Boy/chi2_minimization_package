@@ -12,15 +12,12 @@ E formula is: E =             ymodel - y
                    ------------------------------------
                    sqrt(eps+ ymodel.*(1 - ymodel)./n)
 
-with n being the number of data to calculate each point in y. So n is crucial. It only works if y and ymodel varies between 0 and 1 and it makes more sense when they are probabilities.
+with n being the number of data used to calculate each point in y. So n is crucial. It only works if y and ymodel varies between 0 and 1 and it makes more sense when they are probabilities.
 
 ## Usage
 ### Define your fitting function
-You will need to write two functions and store them in the fitting_functions folder:
-* the fitting function, used for plotting functionality
-* fun, the corresponding chi2 function, whose name ends up with _chi2, used to calculate errors
-
-fun needs to be of the form: prob = your_fitting_function_chi2(x, varying_p, fixed_p) with the different parameter values of the varying ones being in varying_p(1),  varying_p(2)..., and the values of the fixed parameters being in fixed_p(1)...Error is calculated automatically through errorfun so that fun should NOT calculate error. Finally, if an xx is provided to the main call (see below), fun should be able to calculate the ymodel (prob) for xx when we provide an y input.
+You will need to write the fitting function fun with which you want to fit the data and store it in the fitting_functions folder.
+fun needs to be of the form: ymodel = your_fitting_function_chi2(x, varying_p) with the different parameter values of the varying ones being in varying_p(1),  varying_p(2)...Error is calculated automatically through err_fun so that fun should NOT calculate error.
 
 Only the following functions are currently provided:
 * logistic
@@ -35,7 +32,9 @@ bestParams = chi2minimFit(fun, pmin, pmax, x, y, n)
 Advanced usage includes:
 ```
 opts= optimset('display','off')
-[bestParams,bestChiSq,yy,SE,stdFits]=chi2minimFit(fun, pMin, pMax, x, y, n, other_fixed_p, nbFits, verbose, xx, opts)
+xx = [0:0.1:1000];
+[bestParams,bestChiSq,yy,SE,stdFits]=chi2minimFit(fun, pMin, pMax, x, y, n, nbFits, verbose, xx, opts)
+plot(xx,yy); hold on; plot(x,y,'o')
 ```
 #### Inputs
 * fun - the function name or function handle of the function to minimize (in fitting_functions folder)
@@ -44,11 +43,10 @@ opts= optimset('display','off')
 * x - a vector of x data to pass to the function
 * y - a vector of y data to pass to the function
 * n - a vector of number of trials for each x,y datapoint
-* optional other_fixed_p: fixed parameters values
 * optional nfits - the number of times to loop the minimization to avoid dependence to starting values of the parameters
 * optional verbose - either verboseON (default) or verboseOFF
 * optional xx for plot - this is the xx values for which we will calculate the model yy with the best found parameters
-% optional opts - an option structure for lsqnonlin
+* optional opts - an option structure for lsqnonlin
 
 #### Outputs
 * bestParams - the best parameters
