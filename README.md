@@ -17,11 +17,12 @@ with n being the number of data used to calculate each point in y. So n is cruci
 ## Usage
 ### Define your fitting function
 You will need to write the fitting function fun with which you want to fit the data and store it in the fitting_functions folder.
-fun needs to be of the form: ymodel = your_fitting_function_chi2(x, varying_p) with the different parameter values of the varying ones being in varying_p(1),  varying_p(2)...Error is calculated automatically through err_fun so that fun should NOT calculate error.
+fun needs to be of the form: ymodel = your_fitting_function(x, varying_p) with the different parameter values of the varying ones being in varying_p(1),  varying_p(2)...Error is calculated automatically through err_fun so that fun should NOT calculate error.
 
 Only the following functions are currently provided:
 * logistic
 * probit
+* elliptical 2D Gaussian
 
 ### Main call
 The main function to call is chi2minimFit.m
@@ -55,3 +56,9 @@ plot(xx,yy); hold on; plot(x,y,'o')
 * SE is the standard error for each parameter using Jacobian estimate
 Be careful if you estimate your parameters in a log space: the SE will also be in log space. So to plot it, do: ciplot(10.^(threshold-log10(SE_thr)),10.^(threshold+log10(SE_thr)),xx,'r',0.3);
 * stdFits is the std of parameters across repetitions of the different fits - if ~0, you do not need to use a high nbFits
+
+## An example with 2D data not between 0 and 1
+Run demo_2D_fit.m and look in the code to understand how to use the same function to fit 2D data, here with an elliptical 2D Gaussian. 
+You will need to manually normalize the z data between 0 and 1, but also the min and max values for the parameters.
+Do not forget to retransform back the fitted data to its original format and to retransform back also the parameters that have a meaning in the z axis.
+![A figure showing the simulated data, actual data and obtained fit](https://github.com/Stereo-Boy/chi2_minimization_package/blob/main/example.png?raw=true)
